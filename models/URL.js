@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const nanoId = require("nanoid");
+import mongoose from "mongoose";
+import { nanoid }  from "nanoid";
 
 const urlSchema = new mongoose.Schema(
     {
@@ -10,14 +10,15 @@ const urlSchema = new mongoose.Schema(
         shortUrl: {
             type: String,
             required: true,
-            default: () => nanoId(8)
+            default: nanoid(8)
         },
         clicks: {
             type: Number,
             required: true,
             default: 0
         }
-    }
+    },
+    { timestamps: true }
 );
 
-module.exports = mongoose.model("URL", urlSchema);
+export default mongoose.model("URL", urlSchema);

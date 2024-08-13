@@ -1,10 +1,14 @@
-const express = require("express");
-const mongoose = require("mongoose");
+import express from "express";
+import mongoose from "mongoose";
+import isUrl from "is-url";
 
-const URL = require("../models/URL");
+import URL from "../models/URL.js";
 
 const router = express.Router();
 
+router.get("/", (req, res) => {
+    res.render("index");
+});
 
 
-module.exports = router;
+export default router;
