@@ -25,7 +25,7 @@ router.post("/shorten", async (req, res) => {
         // checks if url is exist
         const url = await URL.findOne({ fullUrl });
         if (url) {
-            return res.render("index", {shortUrl: url.shortUrl});
+            return res.redirect("/");
         }
 
         const shortUrl = new URL({
@@ -40,5 +40,29 @@ router.post("/shorten", async (req, res) => {
     }
 });
 
+router.get("/:shortUrl", async (req, res) => {
+    const { shortUrl } = req.params;
+
+    const url = await URL.findOne({ shortUrl });
+    if (url) {
+        url.clicks++;
+        await url.save();
+        return res.redirect(url.fullUrl);
+    } else {
+        console.log(error.message);
+        return res.redirect("/");
+    }
+
+});
+
+router.get("/delete/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        await URL.findByIdAndDelete({ _id: id});
+        res.redirect("/"); 
+    } catch (error) {
+        console.log({error: error.message});   
+    }
+});
 
 export default router;

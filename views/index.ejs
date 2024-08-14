@@ -31,7 +31,7 @@
                 <button class="btn btn-primary" type="submit">Shorten</button>
             </form>
         </div>
-        <div class="col-8 mx-auto">
+        <div class="col-10 mx-auto">
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -39,6 +39,7 @@
                       <th scope="col">Url</th>
                       <th scope="col">ShortURl</th>
                       <th scope="col">Clicks</th>
+                      <th scope="col">Delete</th>
                     </tr>
                   </thead>
                   <% shortUrl.forEach((url, index) => { %>
@@ -46,9 +47,9 @@
                     <tr>
                       <th scope="row"><%= index + 1 %></th>
                       <td><a href="<%= url.fullUrl %>" target="_blank"><%= url.fullUrl %></a></td>
-                      <td><a href="<%= baseUrl %>/<%= url.shortUrl %>"><%= baseUrl %>/<%= url.shortUrl %></a></td>
+                      <td><a href="<%= url.shortUrl %>"><%= baseUrl %>/<%= url.shortUrl %></a></td>
                       <td><%= url.clicks %></td>
-                      <td><a href="/delete"><i class="fa-solid fa-trash text-danger"></i></a></td>
+                      <td><a href="/delete/<%= url._id %>"><i class="fa-solid fa-trash text-danger"></i></a></td>
                     </tr>
                   </tbody>
                   <% }); %>
