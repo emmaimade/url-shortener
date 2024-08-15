@@ -1,11 +1,10 @@
 import express from "express";
-import mongoose from "mongoose";
-import isUrl from "is-url";
 
 import URL from "../models/URL.js";
 
 const router = express.Router();
 
+// get endpoint
 router.get("/", async (req, res) => {
     const baseUrl = req.get("host");
 
@@ -13,19 +12,25 @@ router.get("/", async (req, res) => {
     res.render("index", {shortUrl: urls, baseUrl});
 });
 
+// post endpoint
 router.post("/shorten", async (req, res) => {
     try {
         const { fullUrl } = req.body;
+        const baseUrl = req.get("host");
 
-        // checks if url is valid
-        if (!isUrl(fullUrl)) {
-            res.render("index", { error: "Please enter a valid URL" });
-        }
-
-        // checks if url is exist
-        const url = await URL.findOne({ fullUrl });
-        if (url) {
-            return res.redirect("/");
+        // checks if url exists
+        const existingUrl = await URL.findOne({ fullUrl });
+        if (existingUrl) {
+            const allUrls = await URL.find();
+            return res.render(
+                "index", 
+                {
+                    error: 'Url exists',
+                    existingUrl,
+                    shortUrl: allUrls,
+                    baseUrl
+                }
+            );
         }
 
         const shortUrl = new URL({
@@ -40,6 +45,7 @@ router.post("/shorten", async (req, res) => {
     }
 });
 
+// get shortUrl endpoint
 router.get("/:shortUrl", async (req, res) => {
     const { shortUrl } = req.params;
 
@@ -49,12 +55,12 @@ router.get("/:shortUrl", async (req, res) => {
         await url.save();
         return res.redirect(url.fullUrl);
     } else {
-        console.log(error.message);
         return res.redirect("/");
     }
 
 });
 
+// delete endpoint
 router.get("/delete/:id", async (req, res) => {
     try {
         const { id } = req.params;
