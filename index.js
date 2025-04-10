@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 5000;
 const dbURI = process.env.DB_URI;
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 mongoose.connect(dbURI)

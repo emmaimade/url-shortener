@@ -3,77 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Url Shortener</title>
+    <title>URL Shortener | Create Short Links Instantly</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="./style/main.css">
 </head>
 <body>
     <div class="container">
-        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-            <div class="col-md-3 mb-2 mb-md-0">
-              <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
-                <h4>Url Shortener</h4>
-              </a>
+        <header class="d-flex flex-wrap align-items-center justify-content-between py-3 mb-4">
+            <div class="d-flex align-items-center">
+                <a href="/" class="d-flex align-items-center text-decoration-none">
+                    <i class="fas fa-link fa-2x me-2" style="color: var(--primary-color);"></i>
+                    <h4 class="m-0" style="color: var(--primary-color);">Short.ly</h4>
+                </a>
             </div>
       
-            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-              <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-              <li><a href="#" class="nav-link px-2">About</a></li>
-              <li><a href="#" class="nav-link px-2">Pricing</a></li>
-              <li><a href="#" class="nav-link px-2">FAQs</a></li>
-              <li><a href="#" class="nav-link px-2">Contact</a></li>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Analytics</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
+                <li class="nav-item"><a href="#" class="nav-link">About</a></li>
             </ul>
+            
+            <div class="d-flex">
+                <button class="btn btn-outline-primary me-2">Login</button>
+                <button class="btn btn-primary">Sign-up</button>
+            </div>
         </header>
 
         <section>
-
             <% if (locals.error) { %>
-                <div class="alert alert-danger" role="alert">
-                    <p><%- locals.error %></p>
-                    <a href="<%= existingUrl.shortUrl %>" target="_blank"><%= baseUrl %>/<%= existingUrl.shortUrl %></a>
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <div>
+                        <p class="mb-1"><%- locals.error %></p>
+                        <a href="<%= existingUrl.shortUrl %>" target="_blank" class="alert-link">
+                            <%= baseUrl %>/<%= existingUrl.shortUrl %>
+                        </a>
+                    </div>
                 </div>
             <% } %>
 
-            <div class="col-6 mx-auto">
-                <form action="/shorten" method="post" class="my-5 d-flex">
-                    <input class="form-control mx-3" type="url" placeholder="Url" name="fullUrl" required>
-                    <button class="btn btn-primary" type="submit">Shorten</button>
-                </form>
+            <div class="hero-section text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">Shorten Your Links</h1>
+                <p class="lead mb-4">Create short, memorable URLs and track their performance</p>
+                
+                <div class="url-form mx-auto" style="max-width: 800px;">
+                    <form action="/shorten" method="post" class="row g-3 align-items-center">
+                        <div class="col-md-9">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-link"></i></span>
+                                <input class="form-control form-control-lg" type="url" placeholder="Paste your long URL here" name="fullUrl" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-primary btn-lg w-100" type="submit">
+                                <i class="fas fa-rocket me-2"></i>Shorten
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
-            
             <% if (locals.shortUrl && locals.shortUrl.length > 0) { %>
-            <div class="col-10 mx-auto">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Url</th>
-                        <th scope="col">Short Url</th>
-                        <th scope="col">Clicks</th>
-                        <th scope="col">Delete</th>
-                        </tr>
-                    </thead>
-                    
-                    <tbody>
-                        <% shortUrl.forEach((url, index) => { %>
-                        <tr>
-                        <th scope="row"><%= index + 1 %></th>
-                        <td><a href="<%= url.fullUrl %>" target="_blank"><%= url.fullUrl %></a></td>
-                        <td><a href="<%= url.shortUrl %>" target="_blank"><%= baseUrl %>/<%= url.shortUrl %></a></td>
-                        <td><%= url.clicks %></td>
-                        <td><a href="/delete/<%= url._id %>"><i class="fa-solid fa-trash text-danger"></i></a></td>
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                    
-                </table>
+            <div class="row mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3><%= shortUrl.reduce((acc, url) => acc + url.clicks, 0) %></h3>
+                        <p class="text-muted">Total Clicks</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3><%= shortUrl.length %></h3>
+                        <p class="text-muted">Short Links</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="stats-card text-center">
+                        <div class="stats-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>24/7</h3>
+                        <p class="text-muted">Link Monitoring</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-2">
+                    <h5 class="mb-0 fs-6">Your Short Links</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0 fs-7">
+                            <thead>
+                                <tr class="fs-7">
+                                    <th scope="col" width="5%">#</th>
+                                    <th scope="col" width="40%">Original URL</th>
+                                    <th scope="col" width="30%">Short URL</th>
+                                    <th scope="col" width="10%">Clicks</th>
+                                    <th scope="col" width="15%">Actions</th>
+                                </tr>
+                            </thead>
+                            
+                            <tbody>
+                                <% shortUrl.forEach((url, index) => { %>
+                                <tr>
+                                    <td class="align-middle"><%= index + 1 %></td>
+                                    <td class="align-middle text-truncate" style="max-width: 200px;" title="<%= url.fullUrl %>">
+                                        <a href="<%= url.fullUrl %>" target="_blank" class="text-decoration-none">
+                                            <%= url.fullUrl %>
+                                        </a>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center">
+                                            <a href="<%= url.shortUrl %>" target="_blank" class="text-truncate me-2" style="max-width: 120px;">
+                                                <%= baseUrl %>/<%= url.shortUrl %>
+                                            </a>
+                                            <i class="far fa-copy copy-btn fs-7" onclick="copyToClipboard('<%= baseUrl %>/<%= url.shortUrl %>')"></i>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <span class="badge bg-primary rounded-pill px-2"><%= url.clicks %></span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <div class="d-flex">
+                                            <!--<a href="/analytics/<%= url._id %>" class="btn btn-sm btn-outline-primary me-1 px-2 py-1" title="Analytics">
+                                                <i class="fas fa-chart-pie fs-7"></i>
+                                            </a>-->
+                                            <a href="/delete/<%= url._id %>" class="btn btn-sm btn-outline-danger px-2 py-1" title="Delete">
+                                                <i class="fas fa-trash-alt fs-7"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <% } else { %>
+            <div class="text-center py-5">
+                <i class="fas fa-link fa-4x mb-4" style="color: #e9ecef;"></i>
+                <h3 class="mb-3">No Short URLs Yet</h3>
+                <p class="text-muted">Create your first short URL by entering a link above</p>
             </div>
             <% } %>
-        </div>
-    </section>
-    
+        </section>
+        
+        <footer class="mt-5">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5>Short.ly</h5>
+                    <p class="text-muted">The simplest way to shorten your URLs and track their performance.</p>
+                    <div class="d-flex">
+                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Product</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">Features</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Pricing</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">API</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Integrations</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2 mb-4">
+                    <h5>Company</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white text-decoration-none">About</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Blog</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Careers</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Subscribe to our newsletter</h5>
+                    <p class="text-muted">Monthly digest of what's new and exciting from us.</p>
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="email" placeholder="Email address">
+                        <button class="btn btn-primary" type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="d-flex justify-content-between">
+                <p class="mb-0">© 2024 Short.ly. All rights reserved.</p>
+                <div>
+                    <a href="#" class="text-white text-decoration-none me-3">Privacy Policy</a>
+                    <a href="#" class="text-white text-decoration-none">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Show tooltip or alert that text was copied
+                alert('Copied to clipboard: ' + text);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+        
+        // Add animation to table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(5px)';
+                row.style.transition = 'transform 0.3s ease';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
 </body>
 </html>
