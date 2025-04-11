@@ -37,3 +37,6 @@ This is a simple URL shortener built using Node.js and Express. It allows you to
    ```
 
 6. Open your browser and navigate to `http://localhost:3000`.
+
+## Project URL
+https://roadmap.sh/projects/url-shortening-service
